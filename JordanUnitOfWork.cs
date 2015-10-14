@@ -40,7 +40,7 @@ namespace uShip.Infrastructure.Adapters
         public TResult Execute(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
             using (var session = _sessionFactory.OpenSession())
-            using (var trans = session.BeginTransaction(isolationLevel))
+            using (session.BeginTransaction(isolationLevel))
             {
                 TResult result;
 

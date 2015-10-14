@@ -1,13 +1,12 @@
-﻿using System;
+﻿using HibernatingRhinos.Profiler.Appender.NHibernate;
+using NHibernate;
+using NHibernate.Exceptions;
+using NSubstitute;
+using NUnit.Framework;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
-using HibernatingRhinos.Profiler.Appender.NHibernate;
-using NHibernate;
-using NHibernate.Exceptions;
-using NHibernate.Mapping;
-using NSubstitute;
-using NUnit.Framework;
 using uShip.Infrastructure.Adapters;
 
 namespace UOW
@@ -282,6 +281,7 @@ namespace UOW
             }
 
             //Assert.IsFalse(session.IsOpen);           // Why doesn't this work?
+            Assert.IsNotNull(trans);
             Assert.IsFalse(trans.IsActive);
             Assert.IsFalse(trans.WasCommitted);
             Assert.IsTrue(trans.WasRolledBack);
@@ -473,24 +473,23 @@ namespace UOW
         {
             // Arrange
             var auctionInMemory = NewAuctionWithRandomTitle();
-            var originalTitle = auctionInMemory.Title;
             var modifiedTitle = auctionInMemory.Title + " MODIFIED";
+            object auctionId;
 
             Auction auctionFromSession1;
             using (var session1 = _sessionFactory.OpenSession())
+            using (var trans1 = session1.BeginTransaction())
             {
-                session1.Save(auctionInMemory);
-                auctionFromSession1 = session1.Get<Auction>(auctionInMemory.Id);
-                session1.Flush();
-                session1.Close();
-            }
+                auctionId = session1.Save(auctionInMemory);
+                auctionFromSession1 = session1.Get<Auction>(auctionId);
 
-            _sessionFactory.UnitOfWork(session2 =>
-            {
-                // Act
-                auctionFromSession1.Title = modifiedTitle;
-                session2.Update(auctionFromSession1);
-            });
+                _sessionFactory.UnitOfWork(session2 =>
+                {
+                    // Act
+                    auctionFromSession1.Title = modifiedTitle;
+                    session2.Update(auctionFromSession1);
+                });
+            }
 
             // Assert
             Assert.AreEqual(1, NewSession().QueryOver<Auction>().RowCount()); // wrong!
@@ -501,7 +500,32 @@ namespace UOW
         [Test]
         public void Crossing_sessions_inside_to_outside()
         {
-            Assert.Fail("Write this test.");
+            // Arrange
+            var auctionInMemory = NewAuctionWithRandomTitle();
+            var modifiedTitle = auctionInMemory.Title + " MODIFIED";
+            object auctionId;
+            Auction auctionFromSession2 = null;
+
+            using (var session1 = _sessionFactory.OpenSession())
+            using (var trans1 = session1.BeginTransaction())
+            {
+                _sessionFactory.UnitOfWork(session2 =>
+                {
+                    // Act
+                    auctionInMemory.Title = modifiedTitle;
+                    auctionId = session2.Save(auctionInMemory);
+                    auctionFromSession2 = session2.Get<Auction>(auctionId);
+
+                });
+
+                auctionFromSession2.Title = modifiedTitle;
+                session1.Update(auctionFromSession2);
+            }
+
+            // Assert
+            Assert.AreEqual(1, NewSession().QueryOver<Auction>().RowCount()); // wrong!
+            Assert.AreEqual(auctionInMemory, LoadAuctionByTitle(modifiedTitle));
+            Assert.Fail("Finish this test.  It should throw in the inner using block.");
         }
     }
 }
