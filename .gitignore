@@ -1,0 +1,70 @@
+syntax: glob
+obj/
+bin/
+*.suo
+*.user
+glob:UShip.5.0.resharper
+TestResults/
+DevResources/precommit.patch
+aspnet_client/
+.hgtags
+_UpgradeReport_Files/*
+.eprj
+*.bat
+packages/*
+packages/uShip.*/
+packages/concord.*/
+uShip.Web.Publish.xml
+settings.json
+id3Solutions.WebModules.Core.xml
+bin/combres/Combres.XML
+.eprj
+*.orig
+\Uship.Web\Uship.Web.Publish.xml
+Thumbs.db
+_ReSharper*
+*.Cache
+UShip.Web\system\logs\trace\logs.txt
+UShip.Web\system\logs\debug\logs.txt
+UShip.Web\system\logs\warn\logs.txt
+UShip.Web\system\logs\exception\logs.txt
+UShip.Web\system\logs\fatal\logs.txt
+Uship.Business2\MappingPrividers
+Uship.Business2\MappingPrividers\*
+UShip.Web\Quotes\QuoteRequest.aspx
+UShip.Web\Quotes\QuoteRequest.aspx.vb
+UShip.Web\Quotes\QuoteRequest.aspx.designer.vb
+UShip.Web\test\*.xml
+uShip.Application\Marketplace\Contracts\IListingQuestionService.cs
+uShip.Application\Marketplace\ListingQuestionService.cs
+
+uShip.Admin.UI\wf\UserControls\*
+
+system/logs/
+System/logs/
+UShip.Web/Service References/uShipAPI.Marketplace
+UShip.Web/Service References/uShipAPI.Marketplace/*
+UShip.Web/Service References/ushipApi.Marketplace
+UShip.Web/Service References/ushipApi.Marketplace/*
+UShip.Web\mobile
+UShip.Web\mobile\*
+output/*.xml
+output/*.html
+temp.bat
+TestResult.xml
+
+.sass-cache/
+uShip.Web.Mvc/Content/**.css
+uShip.Static/**.css
+uShip.Static/reports/
+uShip.Static/npm-debug.log
+
+
+uShip.TicketToggles/Configuration/uShip.config.template
+Configuration/TicketToggles.config
+syntax: regexp
+(?i)nlog.config$
+(?i)uship.config$
+(?i)^[^/]+/web.config$
+(?i)appsettings.config$
+output.txt
