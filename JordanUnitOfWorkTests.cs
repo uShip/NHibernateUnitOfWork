@@ -4,6 +4,8 @@ using NHibernate.Exceptions;
 using NSubstitute;
 using NUnit.Framework;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -251,7 +253,7 @@ namespace UOW
 
             Assert.Fail("SQL Error Number {0} was not among the errors", expected);
         }
-
+            
         [Test]
         public void SQL_error_in_transaction()
         {
@@ -476,25 +478,31 @@ namespace UOW
             var modifiedTitle = auctionInMemory.Title + " MODIFIED";
             object auctionId;
 
-            Auction auctionFromSession1;
-            using (var session1 = _sessionFactory.OpenSession())
-            using (var trans1 = session1.BeginTransaction())
+            try
             {
-                auctionId = session1.Save(auctionInMemory);
-                auctionFromSession1 = session1.Get<Auction>(auctionId);
-
-                _sessionFactory.UnitOfWork(session2 =>
+                Auction auctionFromSession1;
+                using (var session1 = _sessionFactory.OpenSession())
+                using (var trans1 = session1.BeginTransaction())
                 {
-                    // Act
-                    auctionFromSession1.Title = modifiedTitle;
-                    session2.Update(auctionFromSession1);
-                });
+                    auctionId = session1.Save(auctionInMemory);
+                    auctionFromSession1 = session1.Get<Auction>(auctionId);
+
+                    _sessionFactory.UnitOfWork(session2 =>
+                    {
+                        // Act
+                        auctionFromSession1.Title = modifiedTitle;
+                        session2.Update(auctionFromSession1);
+                    });
+                }
+            }
+            catch (GenericADOException exc)
+            {
+                // Assert
+                Assert.IsInstanceOf<System.Data.SQLite.SQLiteException>(exc.InnerException);
+                Assert.IsTrue(exc.InnerException.Message.Contains("database is locked"));
             }
 
-            // Assert
-            Assert.AreEqual(1, NewSession().QueryOver<Auction>().RowCount()); // wrong!
-            Assert.AreEqual(auctionInMemory, LoadAuctionByTitle(modifiedTitle));
-            Assert.Fail("Finish this test.  It should throw in the UoW block.");
+            Assert.AreEqual(auctionInMemory, LoadAuctionByTitle(auctionInMemory.Title));
         }
 
         [Test]
@@ -506,26 +514,38 @@ namespace UOW
             object auctionId;
             Auction auctionFromSession2 = null;
 
-            using (var session1 = _sessionFactory.OpenSession())
-            using (var trans1 = session1.BeginTransaction())
+            try
             {
-                _sessionFactory.UnitOfWork(session2 =>
+                using (var session1 = _sessionFactory.OpenSession())
+                using (var trans1 = session1.BeginTransaction())
                 {
-                    // Act
-                    auctionInMemory.Title = modifiedTitle;
-                    auctionId = session2.Save(auctionInMemory);
-                    auctionFromSession2 = session2.Get<Auction>(auctionId);
+                    _sessionFactory.UnitOfWork(session2 =>
+                    {
+                        // Act
+                        auctionInMemory.Title = modifiedTitle;
+                        auctionId = session2.Save(auctionInMemory);
+                        auctionFromSession2 = session2.Get<Auction>(auctionId);
 
-                });
+                    });
 
-                auctionFromSession2.Title = modifiedTitle;
-                session1.Update(auctionFromSession2);
+                    auctionFromSession2.Title = modifiedTitle;
+                    session1.Update(auctionFromSession2);
+                }
+            }
+            catch (GenericADOException exc)
+            {
+                // Assert
+                Assert.IsInstanceOf<System.Data.SQLite.SQLiteException>(exc.InnerException);
+                Assert.IsTrue(exc.InnerException.Message.Contains("database is locked"));
             }
 
-            // Assert
-            Assert.AreEqual(1, NewSession().QueryOver<Auction>().RowCount()); // wrong!
-            Assert.AreEqual(auctionInMemory, LoadAuctionByTitle(modifiedTitle));
-            Assert.Fail("Finish this test.  It should throw in the inner using block.");
+            Assert.AreEqual(auctionInMemory, LoadAuctionByTitle(auctionInMemory.Title));
+        }
+
+        [Test]
+        public void Evict_and_nested_sessions()
+        {
+            Assert.Fail("Write this test.");
         }
     }
 }
