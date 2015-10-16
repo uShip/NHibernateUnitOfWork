@@ -279,7 +279,10 @@ namespace UOW
             }
             catch (GenericADOException exc)
             {
-                Assert.IsTrue(exc.InnerException.Message.Contains("UNIQUE constraint failed: Auction.Title"));
+                var innerMsg = exc.InnerException.Message;
+                Assert.IsTrue(
+                    innerMsg.Contains("UNIQUE constraint failed: Auction.Title") // SQLite
+                    || innerMsg.Contains("Violation of UNIQUE KEY constraint")); // SQL Server
             }
 
             //Assert.IsFalse(session.IsOpen);           // Why doesn't this work?
@@ -498,11 +501,16 @@ namespace UOW
             catch (GenericADOException exc)
             {
                 // Assert
-                Assert.IsInstanceOf<System.Data.SQLite.SQLiteException>(exc.InnerException);
-                Assert.IsTrue(exc.InnerException.Message.Contains("database is locked"));
+                var innerExc = exc.InnerException;
+                Assert.IsTrue(
+                    (innerExc is System.Data.SQLite.SQLiteException)  // SQLite
+                    || innerExc is SqlException);                     // MS SQL Server
+                Assert.IsTrue(
+                    innerExc.Message.Contains("database is locked")   // SQLite
+                    || innerExc.Message.Contains("Timeout expired")); // MS SQL Server
             }
 
-            Assert.AreEqual(auctionInMemory, LoadAuctionByTitle(auctionInMemory.Title));
+            Assert.IsNull(LoadAuctionByTitle(auctionInMemory.Title));
         }
 
         [Test]

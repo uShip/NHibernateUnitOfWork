@@ -7,11 +7,11 @@ namespace UOW
 {
     class Config
     {
-        public static FluentConfiguration Database { get { return SqliteDatabase; } }
+        public static FluentConfiguration Database { get { return MsSqlDatabase; } }
 
         #region MS SQL Server
         private static readonly string MsSqlDbConnectionString =
-            @"Server=MININT-I2NBRFP\SQLEXPRESS;Database=UnitOfWorkTest;Trusted_Connection=True;";
+            @"Server=localhost\SQLEXPRESS2;Database=UnitOfWorkTest;Trusted_Connection=True;";
 
         protected static FluentConfiguration MsSqlDatabase
         {
