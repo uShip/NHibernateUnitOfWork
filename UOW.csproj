@@ -73,10 +73,16 @@
     <Compile Include="DatabaseSchema.cs" />
     <Compile Include="DatabaseSessionFactory.cs" />
     <Compile Include="DbConnectionTests.cs" />
+    <Compile Include="ExistenceQueryAlternatives.cs" />
     <Compile Include="JordanUnitOfWork.cs" />
     <Compile Include="JordanUnitOfWorkTests.cs" />
+    <Compile Include="SelectiveQueryTest.cs" />
+    <Compile Include="SessionTesting.cs" />
     <Compile Include="SetUpFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlStoredProcedure.cs" />
+    <Compile Include="SqlStoredProcedureTests.cs" />
+    <Compile Include="Widget.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

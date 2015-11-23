@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 
@@ -7,7 +6,7 @@ namespace UOW
 {
     class Config
     {
-        public static FluentConfiguration Database { get { return MsSqlDatabase; } }
+        public static FluentConfiguration Database { get { return SqliteDatabase; } }
 
         #region MS SQL Server
         private static readonly string MsSqlDbConnectionString =

@@ -1,6 +1,5 @@
-﻿using NUnit.Framework;
-using System;
-using NHibernate.Util;
+﻿using NHibernate.Util;
+using NUnit.Framework;
 
 namespace UOW
 {
@@ -13,7 +12,7 @@ namespace UOW
             var sessionFactory = new DatabaseSessionFactory();
             using (var session = sessionFactory.OpenSession())
             {
-                var actual = (int) session
+                var actual = session
                     .CreateSQLQuery("select 1")
                     .List()
                     .First();

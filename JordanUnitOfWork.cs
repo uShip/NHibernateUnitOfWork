@@ -6,28 +6,6 @@ using ISessionFactory = UOW.ISessionFactory;
 
 namespace uShip.Infrastructure.Adapters
 {
-    public class CompoundException : Exception
-    {
-        private readonly Exception[] _exceptions;
-        public Exception[] Exceptions { get { return _exceptions; } }
-
-        public CompoundException(params Exception[] exceptions)
-        {
-            _exceptions = exceptions;
-        }
-
-        public override string Message
-        {
-            get
-            {
-                return string.Join("\r\n", _exceptions.Select(x => x.Message));
-            }
-        }
-
-        // TODO: override the rest of the Exception methods with appropriate
-        // aggregation of contained Exception instances.
-    }
-
     public abstract class UnitOfWork<TResult>
     {
         private readonly ISessionFactory _sessionFactory;
@@ -60,7 +38,7 @@ namespace uShip.Infrastructure.Adapters
                         // KLUDGE: This sucks: We can't rethrow to preserve
                         // stack traces, and the thrown exception won't look
                         // much like either of the original exceptions.
-                        throw new CompoundException(
+                        throw new AggregateException(
                             executeOrCommitExc,
                             rollbackExc);
                     }

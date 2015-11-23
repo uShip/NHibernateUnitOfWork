@@ -5,10 +5,15 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.Reflection;
+using System.Threading;
+using NHibernate.Linq;
+using NHibernate.Util;
 using uShip.Infrastructure.Adapters;
 
 namespace UOW
@@ -48,12 +53,17 @@ namespace UOW
         {
             return new Auction
             {
-                Title = string.Format(
-                    "One pallet of {0} awesome things",
-                    _prng.Next().ToString(CultureInfo.InvariantCulture)),
+                Title = RandomAuctionTitle(),
                 CreatedUTC = DateTime.UtcNow,
                 SellerName = "Bob Loblaw",
             };
+        }
+
+        private string RandomAuctionTitle()
+        {
+            return string.Format(
+                "One pallet of {0} awesome things",
+                _prng.Next().ToString(CultureInfo.InvariantCulture));
         }
 
         [Test]
@@ -364,11 +374,11 @@ namespace UOW
                 Assert.Fail(
                     "CompoundException was not thrown, but should have been");
             }
-            catch (CompoundException exc)
+            catch (AggregateException exc)
             {
                 // Assert
-                Assert.AreSame(exc1, exc.Exceptions[0]);
-                Assert.AreSame(exc2, exc.Exceptions[1]);
+                Assert.AreSame(exc1, exc.InnerExceptions[0]);
+                Assert.AreSame(exc2, exc.InnerExceptions[1]);
             }
         }
 
@@ -554,6 +564,170 @@ namespace UOW
         public void Evict_and_nested_sessions()
         {
             Assert.Fail("Write this test.");
+        }
+
+        [Test]
+        public void Nested_transactions_like_BidAcceptedMessageConsumer()
+        {
+            // Arrange
+            var auction = NewAuctionWithRandomTitle();
+            var originalTitle = auction.Title;
+            var modifiedTitle = originalTitle + " MODIFIED";
+            var auctionId = _sessionFactory.UnitOfWork(s => s.Save(auction));
+
+            Console.WriteLine("=== BEGIN Nested Sessions ===");
+            _sessionFactory.UnitOfWork(session1 =>
+            {
+                var auction1 = session1.Get<Auction>(auctionId);
+                Assert.AreEqual(originalTitle, auction1.Title);
+
+                _sessionFactory.UnitOfWork(session2 =>
+                {
+                    var auction2 = session2.Get<Auction>(auctionId);
+                    auction2.Title = modifiedTitle;
+                    session2.Update(auction2);
+                });
+
+                Assert.AreEqual(originalTitle, auction1.Title);
+            });
+            Console.WriteLine("=== END Nested Sessions ===");
+
+            Assert.IsNull(LoadAuctionByTitle(originalTitle));
+            Assert.IsNotNull(LoadAuctionByTitle(modifiedTitle));
+        }
+
+        [Test]
+        public void Exception_thrown_during_commit_from_DB()
+        {
+            // Arrange
+            var auction = NewAuctionWithRandomTitle();
+            var cloneAuction = new Auction
+            {
+                // duplicate title will violate unique constraint
+                Title = auction.Title,              
+                SellerName = auction.SellerName,
+                CreatedUTC = auction.CreatedUTC,
+            };
+
+            _sessionFactory.UnitOfWork(IsolationLevel.Snapshot, session =>
+            {
+                session.FlushMode = FlushMode.Commit;
+                Assert.DoesNotThrow(() => { session.Save(cloneAuction); });
+
+                using (var s = _sessionFactory.OpenSession())
+                using (var t = session.BeginTransaction(IsolationLevel.Snapshot))
+                {
+                    s.FlushMode = FlushMode.Commit;
+                    Assert.DoesNotThrow(() => s.Save(auction));
+                    Assert.Throws<Exception>(t.Commit);
+                }
+
+                // Act
+                Assert.Throws<Exception>(session.Transaction.Commit);
+            });
+        }
+
+        [Test]
+        public void UnicodeStoredInAnsiString()
+        {
+            // Arrange
+            const string AngryDude = "ಠ_ಠ";
+            var id = long.MinValue;
+            _sessionFactory.UnitOfWork(session =>
+            {
+                id = (long)session.Save(new Widget() { Title = AngryDude });
+            });
+
+            _sessionFactory.UnitOfWork(session =>
+            {
+                //Assert.AreEqual(
+                //    AngryDude,
+                //    session.Get<Widget>(id).Title);
+                Assert.AreEqual(
+                    id,
+                    session.QueryOver<Widget>()
+                        .Where(w => w.Title == "ಠ_ಠ")
+                        .SingleOrDefault());
+                Assert.AreNotEqual(
+                    id,
+                    session.QueryOver<Widget>()
+                        .Where(w => w.Title == "?_?")
+                        .SingleOrDefault());
+            });
+
+       
+            // Assert
+        }
+
+        [Test]
+        public void Session_activity_after_transaction_abort()
+        {
+            var exceptions = new ConcurrentBag<Exception>();
+            using (var session = _sessionFactory.OpenSession())
+            {
+                var rollbackThread = ThreadedTransaction(
+                    exceptions, 
+                    session, 
+                    trans => {
+                        session.Save(NewAuctionWithRandomTitle());
+                        trans.Rollback();
+                        trans.Dispose();
+                    });
+                var commitThread = ThreadedTransaction(
+                    exceptions,
+                    session,
+                    trans =>
+                    {
+                        session.Save(NewAuctionWithRandomTitle());
+                        Thread.Sleep(TimeSpan.FromMilliseconds(100));
+                        trans.Commit();
+                    });
+
+                rollbackThread.Start();
+                commitThread.Start();
+
+                rollbackThread.Join();
+                commitThread.Join();
+
+                Assert.IsEmpty(exceptions);
+            }
+        }
+
+        [Test]
+        public void Session_activity_after_transaction_dispose()
+        {
+            using (var session = _sessionFactory.OpenSession())
+            using (var trans = session.BeginTransaction())
+            {
+                session.Save(NewAuctionWithRandomTitle());
+                var cmd = new SqlCommand(
+                    "exec FatalError", 
+                    (SqlConnection)session.Connection);
+                trans.Enlist(cmd);
+                cmd.ExecuteNonQuery();
+                Assert.Throws<TransactionException>(() => trans.Commit());
+            }
+        }
+
+        private static Thread ThreadedTransaction(
+            ConcurrentBag<Exception> exceptions,
+            ISession session,
+            Action<ITransaction> threadStart)
+        {
+            return new Thread(() =>
+            {
+                try
+                {
+                    using (var trans = session.BeginTransaction())
+                    {
+                        threadStart(trans);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    exceptions.Add(exc);
+                }
+            });
         }
     }
 }
