@@ -1,5 +1,4 @@
 ﻿using System;
-using HibernatingRhinos.Profiler.Appender.NHibernate;
 using NUnit.Framework;
 
 namespace UOW
@@ -13,7 +12,6 @@ namespace UOW
         public void FixtureSetUp()
         {
             _sessionFactory = new DatabaseSessionFactory();
-            NHibernateProfiler.Initialize();
         }
 
         [TestFixtureTearDown]

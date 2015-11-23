@@ -1,5 +1,4 @@
-﻿using HibernatingRhinos.Profiler.Appender.NHibernate;
-using NHibernate;
+﻿using NHibernate;
 using NHibernate.Exceptions;
 using NSubstitute;
 using NUnit.Framework;
@@ -27,7 +26,6 @@ namespace UOW
         public void FixtureSetUp()
         {
             _sessionFactory = new DatabaseSessionFactory();
-            NHibernateProfiler.Initialize();
         }
 
         [TestFixtureTearDown]

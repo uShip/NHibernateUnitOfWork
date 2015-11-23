@@ -6,7 +6,7 @@ namespace UOW
 {
     class Config
     {
-        public static FluentConfiguration Database { get { return SqliteDatabase; } }
+        public static FluentConfiguration Database { get { return MsSqlDatabase; } }
 
         #region MS SQL Server
         private const string MsSqlDbConnectionString = 
