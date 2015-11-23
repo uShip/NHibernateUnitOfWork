@@ -1,5 +1,5 @@
 ﻿language: csharp
-solution: UOW.sln
+solution: ./UOW.sln
 #mono:
 #  - latest
 #install:
