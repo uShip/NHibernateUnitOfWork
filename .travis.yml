@@ -1,9 +1,0 @@
-﻿language: csharp
-solution: UOW.sln
-#mono:
-#  - latest
-#install:
-#  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
-#script:
-#  - xbuild /p:Configuration=Release UOW.sln
-#  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./bin/Release/UOW.dll

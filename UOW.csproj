@@ -85,7 +85,6 @@
     </None>
     <None Include="AppVeyor.Tests.BeforeTests.ps1" />
     <None Include="packages.config" />
-    <None Include=".travis.yml" />
     <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
