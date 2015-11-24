@@ -595,37 +595,6 @@ namespace UOW
         }
 
         [Test]
-        public void Exception_thrown_during_commit_from_DB()
-        {
-            // Arrange
-            var auction = NewAuctionWithRandomTitle();
-            var cloneAuction = new Auction
-            {
-                // duplicate title will violate unique constraint
-                Title = auction.Title,              
-                SellerName = auction.SellerName,
-                CreatedUTC = auction.CreatedUTC,
-            };
-
-            _sessionFactory.UnitOfWork(IsolationLevel.Snapshot, session =>
-            {
-                session.FlushMode = FlushMode.Commit;
-                Assert.DoesNotThrow(() => { session.Save(cloneAuction); });
-
-                using (var s = _sessionFactory.OpenSession())
-                using (var t = session.BeginTransaction(IsolationLevel.Snapshot))
-                {
-                    s.FlushMode = FlushMode.Commit;
-                    Assert.DoesNotThrow(() => s.Save(auction));
-                    Assert.Throws<Exception>(t.Commit);
-                }
-
-                // Act
-                Assert.Throws<Exception>(session.Transaction.Commit);
-            });
-        }
-
-        [Test]
         public void UnicodeStoredInAnsiString()
         {
             // Arrange
