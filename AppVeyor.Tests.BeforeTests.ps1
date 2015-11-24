@@ -7,6 +7,7 @@ $dbName = "UnitOfWorkTest"
 $dotConfigPath = join-path $startPath "UOW.dll.config"
 $dotConfigXml = (Get-Content $dotConfigPath) -as [xml]
 $dotConfigXml.SelectSingleNode('//connectionStrings/add[@name="UnitOfWorkTest"]').connectionString = "Server=$sqlInstance; Database=$dbName; Trusted_connection=true"
+$dotConfigXml.SelectSingleNode('//appSettings/add[@name="NHibernate.ShowSql"]').value = "False"
 $dotConfigXml.Save($dotConfigPath)
 
 # create the database

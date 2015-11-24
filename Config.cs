@@ -9,6 +9,18 @@ namespace UOW
     {
         public static FluentConfiguration Database { get { return MsSqlDatabase; } }
 
+        public static bool ShowSql
+        {
+            get
+            {
+                bool showSql;
+                var appSetting = ConfigurationManager.AppSettings["NHibernate.ShowSql"];
+                return (null != appSetting)
+                    && bool.TryParse(appSetting, out showSql)
+                    && showSql;
+            }
+        }
+
         #region MS SQL Server
         private static readonly ConnectionStringSettings MsSqlDbConnectionString =
             ConfigurationManager.ConnectionStrings["UnitOfWorkTest"];
@@ -17,12 +29,20 @@ namespace UOW
         {
             get
             {
-                return Fluently.Configure()
-                    .Database(MsSqlConfiguration
-                        .MsSql2012
-                        .ConnectionString(MsSqlDbConnectionString.ConnectionString)
+                var msSqlConfiguration = MsSqlConfiguration
+                    .MsSql2012
+                    .ConnectionString(MsSqlDbConnectionString.ConnectionString);
+
+                if (ShowSql)
+                {
+                    msSqlConfiguration
                         .ShowSql()
-                        .FormatSql())
+                        .FormatSql();
+                }
+
+                return Fluently.Configure()
+                    .Database(msSqlConfiguration
+                        )
                     .Mappings(m => m.FluentMappings
                         .AddFromAssemblyOf<AuctionMap>());
             }
