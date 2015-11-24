@@ -559,12 +559,6 @@ namespace UOW
         }
 
         [Test]
-        public void Evict_and_nested_sessions()
-        {
-            Assert.Fail("Write this test.");
-        }
-
-        [Test]
         public void Nested_transactions_like_BidAcceptedMessageConsumer()
         {
             // Arrange
