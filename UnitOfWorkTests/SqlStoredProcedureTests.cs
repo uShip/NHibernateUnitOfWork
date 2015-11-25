@@ -1,4 +1,5 @@
 ﻿using System;
+using NHibernate;
 using NUnit.Framework;
 using UOW;
 
@@ -7,12 +8,12 @@ namespace UnitOfWorkTests
     [TestFixture]
     public class SqlStoredProcedureTests
     {
-        private DatabaseSessionFactory _sessionFactory;
+        private ISessionFactory _sessionFactory;
 
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            _sessionFactory = new DatabaseSessionFactory();
+            _sessionFactory = SessionFactory.Instance;
         }
 
         [TestFixtureTearDown]

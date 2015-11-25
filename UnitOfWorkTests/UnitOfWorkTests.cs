@@ -4,7 +4,9 @@ using System.Data.SqlClient;
 using System.Globalization;
 using NHibernate;
 using NHibernate.Exceptions;
+using NSubstitute;
 using NUnit.Framework;
+using UOW;
 
 namespace UnitOfWorkTests
 {
@@ -16,7 +18,7 @@ namespace UnitOfWorkTests
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            _sessionFactory = new DatabaseSessionFactory();
+            _sessionFactory = SessionFactory.Instance;
         }
 
         [TestFixtureTearDown]
@@ -503,12 +505,8 @@ namespace UnitOfWorkTests
             {
                 // Assert
                 var innerExc = exc.InnerException;
-                Assert.IsTrue(
-                    (innerExc is System.Data.SQLite.SQLiteException)  // SQLite
-                    || innerExc is SqlException);                     // MS SQL Server
-                Assert.IsTrue(
-                    innerExc.Message.Contains("database is locked")   // SQLite
-                    || innerExc.Message.Contains("Timeout expired")); // MS SQL Server
+                Assert.IsTrue(innerExc is SqlException);                     // MS SQL Server
+                Assert.IsTrue(innerExc.Message.Contains("Timeout expired")); // MS SQL Server
             }
 
             Assert.IsNull(LoadAuctionByTitle(auctionInMemory.Title));
@@ -544,7 +542,6 @@ namespace UnitOfWorkTests
             catch (GenericADOException exc)
             {
                 // Assert
-                Assert.IsInstanceOf<System.Data.SQLite.SQLiteException>(exc.InnerException);
                 Assert.IsTrue(exc.InnerException.Message.Contains("database is locked"));
             }
 

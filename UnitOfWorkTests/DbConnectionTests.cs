@@ -9,8 +9,7 @@ namespace UnitOfWorkTests
         [Test]
         public void Can_connect_to_database()
         {
-            var sessionFactory = new DatabaseSessionFactory();
-            using (var session = sessionFactory.OpenSession())
+            using (var session = SessionFactory.Instance.OpenSession())
             {
                 var actual = session
                     .CreateSQLQuery("select 1")

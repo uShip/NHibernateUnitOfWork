@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Data;
 using NHibernate;
+using NSubstitute;
 using NUnit.Framework;
+using UOW;
 
 namespace UnitOfWorkTests
 {

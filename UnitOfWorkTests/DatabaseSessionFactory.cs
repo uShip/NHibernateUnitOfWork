@@ -2,23 +2,20 @@
 
 namespace UnitOfWorkTests
 {
-    public interface ISessionFactory
+    public static class SessionFactory
     {
-        ISession OpenSession();
-    }
-
-    public class DatabaseSessionFactory : ISessionFactory
-    {
-        private readonly NHibernate.ISessionFactory _sessionFactory;
-
-        public DatabaseSessionFactory()
+        private static ISessionFactory _sessionFactory;
+        public static ISessionFactory Instance
         {
-            _sessionFactory = Config.Database.BuildSessionFactory();
-        }
+            get
+            {
+                if (null == _sessionFactory)
+                {
+                    _sessionFactory = Config.Database.BuildSessionFactory();
+                }
 
-        public ISession OpenSession()
-        {
-            return _sessionFactory.OpenSession();
+                return _sessionFactory;
+            }
         }
     }
 }
