@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Data;
-using System.Linq;
 using NHibernate;
-using ISessionFactory = UOW.ISessionFactory;
 
-namespace uShip.Infrastructure.Adapters
+namespace UOW
 {
     public abstract class UnitOfWork<TResult>
     {

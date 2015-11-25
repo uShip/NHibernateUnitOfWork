@@ -1,8 +1,8 @@
-﻿using FluentNHibernate.Data;
+﻿using System;
+using FluentNHibernate.Data;
 using FluentNHibernate.Mapping;
-using System;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     /// <summary>
     /// An invitation to bid on a good or service.

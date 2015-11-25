@@ -1,9 +1,9 @@
-﻿using System.IO;
-using System.Configuration;
+﻿using System.Configuration;
+using System.IO;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     class Config
     {

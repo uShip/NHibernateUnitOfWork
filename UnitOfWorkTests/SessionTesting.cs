@@ -1,11 +1,9 @@
 ﻿using System;
-using NHibernate;
-using NSubstitute;
-using NUnit.Framework;
 using System.Data;
-using uShip.Infrastructure.Adapters;
+using NHibernate;
+using NUnit.Framework;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     [TestFixture]
     class SessionTesting

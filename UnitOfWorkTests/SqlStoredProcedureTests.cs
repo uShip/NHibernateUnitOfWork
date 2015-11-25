@@ -1,7 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
+using UOW;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     [TestFixture]
     public class SqlStoredProcedureTests

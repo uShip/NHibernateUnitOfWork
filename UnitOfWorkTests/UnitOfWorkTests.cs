@@ -1,22 +1,12 @@
-﻿using NHibernate;
-using NHibernate.Exceptions;
-using NSubstitute;
-using NUnit.Framework;
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Threading;
-using NHibernate.Linq;
-using NHibernate.Util;
-using uShip.Infrastructure.Adapters;
+using NHibernate;
+using NHibernate.Exceptions;
+using NUnit.Framework;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     [TestFixture]
     public class UnitOfWorkTests

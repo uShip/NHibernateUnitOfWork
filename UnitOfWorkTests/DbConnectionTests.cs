@@ -1,7 +1,7 @@
 ﻿using NHibernate.Util;
 using NUnit.Framework;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     [TestFixture]
     public class DbConnectionTests

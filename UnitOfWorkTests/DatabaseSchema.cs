@@ -1,7 +1,7 @@
 ﻿using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     public static class DatabaseSchema
     {

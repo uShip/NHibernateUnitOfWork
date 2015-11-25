@@ -1,7 +1,7 @@
 ﻿using FluentNHibernate.Data;
 using FluentNHibernate.Mapping;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     public class Widget : Entity
     {

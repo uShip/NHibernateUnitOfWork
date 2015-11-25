@@ -1,8 +1,8 @@
-﻿using FluentNHibernate.Data;
+﻿using System;
+using FluentNHibernate.Data;
 using FluentNHibernate.Mapping;
-using System;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     /// <summary>
     /// An offer to purchase a good/service for a specific price.

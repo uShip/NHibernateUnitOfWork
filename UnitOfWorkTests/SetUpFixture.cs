@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     [SetUpFixture]
     public class SetUpFixture

@@ -1,6 +1,6 @@
 ﻿using NHibernate;
 
-namespace UOW
+namespace UnitOfWorkTests
 {
     public interface ISessionFactory
     {
