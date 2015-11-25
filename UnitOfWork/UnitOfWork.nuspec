@@ -1,18 +1,10 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>UOW</id>
     <version>$version$-beta</version>
     <title>NHibernate UnitOfWork</title>
-    <authors>
-      Stephen Guerra, 
-      Evan Jones, 
-      Troy Miller, 
-      Jordan Piedt, 
-      Ivan Valle, 
-      Ed Vinyard, 
-      Jake Wilke
-    </authors>
+    <authors>Stephen Guerra, Evan Jones, Troy Miller, Jordan Piedt, Ivan Valle, Ed Vinyard, Jake Wilke</authors>
     <owners>uShip, Inc.</owners>
     <licenseUrl>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</licenseUrl>
     <projectUrl>https://github.com/uShip/NHibernateUnitOfWork</projectUrl>
