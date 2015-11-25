@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>$version$</version>
+    <version>$version$-beta</version>
     <title>NHibernate UnitOfWork</title>
     <authors>
       Stephen Guerra, 
