@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>NHibernate UnitOfWork</title>
+    <authors>
+      Stephen Guerra, 
+      Evan Jones, 
+      Troy Miller, 
+      Jordan Piedt, 
+      Ivan Valle, 
+      Ed Vinyard, 
+      Jake Wilke
+    </authors>
+    <owners>uShip, Inc.</owners>
+    <licenseUrl>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</licenseUrl>
+    <projectUrl>https://github.com/uShip/NHibernateUnitOfWork</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>
+      An NHibernate automatic session and transaction management tool for 
+      short-lived database interactions.
+    </releaseNotes>
+    <copyright>Copyright 2015 uShip, Inc.</copyright>
+  </metadata>
+</package>

@@ -12,7 +12,6 @@ $dotConfigXml.Save($dotConfigPath)
 
 # create the database
 sqlcmd -S "$sqlInstance" -d "master" -Q "CREATE DATABASE [$dbName]" 
-    # ON (FILENAME = '$mdfFile'),(FILENAME = '$ldfFile') for ATTACH"
 
 # test connection to the new database
-sqlcmd -S "$sqlInstance" -d "$dbName" -Q "select 1"
+#sqlcmd -S "$sqlInstance" -d "$dbName" -Q "select 1"

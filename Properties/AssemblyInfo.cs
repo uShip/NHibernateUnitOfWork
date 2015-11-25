@@ -5,12 +5,14 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ClassLibrary1")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("NHibnerate UnitOfWork")]
+[assembly: AssemblyDescription(
+    "An NHibernate automatic session and transaction management tool for " +
+    "short-lived database interactions.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ClassLibrary1")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("uShip, Inc.")]
+[assembly: AssemblyProduct("NHibnerate UnitOfWork")]
+[assembly: AssemblyCopyright("Copyright © 2015 uShip, Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

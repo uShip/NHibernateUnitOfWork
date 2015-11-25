@@ -10,6 +10,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading;
 using NHibernate.Linq;
 using NHibernate.Util;
@@ -126,6 +127,7 @@ namespace UOW
             Assert.AreEqual(expected, actual);
         }
 
+        [Serializable]
         public class BusinessException : Exception { }
 
         [Test]
@@ -302,6 +304,7 @@ namespace UOW
             Assert.IsNull(LoadAuctionByTitle(auction2.Title));
         }
 
+        [Serializable]
         internal class MidCommitException : Exception { }
 
         [Test]
