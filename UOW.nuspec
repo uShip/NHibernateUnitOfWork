@@ -19,8 +19,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
-      An NHibernate automatic session and transaction management tool for 
-      short-lived database interactions.
+      Experimental release.  Not intended for production use (yet).
     </releaseNotes>
     <copyright>Copyright 2015 uShip, Inc.</copyright>
   </metadata>
