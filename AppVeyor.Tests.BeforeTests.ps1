@@ -1,10 +1,10 @@
-﻿$startPath = "$($env:appveyor_build_folder)\UnitOfWorkTest\bin\Debug"
+﻿$startPath = "$($env:appveyor_build_folder)\UnitOfWorkTests\bin\Debug"
 $instanceName = 'SQL2014'
 $sqlInstance = "localhost\$instanceName"
 $dbName = "UnitOfWorkTest"
 
 # edit the .CONFIG file; alter the connection string
-$dotConfigPath = join-path $startPath "UnitOfWorkTest.dll.config"
+$dotConfigPath = join-path $startPath "UnitOfWorkTests.dll.config"
 $dotConfigXml = (Get-Content $dotConfigPath) -as [xml]
 $dotConfigXml.SelectSingleNode('//connectionStrings/add[@name="UnitOfWorkTest"]').connectionString = "Server=$sqlInstance; Database=$dbName; Trusted_connection=true"
 $dotConfigXml.SelectSingleNode('//appSettings/add[@key="NHibernate.ShowSql"]').value = "False"
