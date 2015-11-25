@@ -1,7 +1,7 @@
 ﻿using System;
 using NHibernate;
 using NUnit.Framework;
-using UOW;
+using uShip.NHibnernate.UnitOfWork;
 
 namespace UnitOfWorkTests
 {

@@ -2,7 +2,7 @@
 using System.Data;
 using NHibernate;
 
-namespace UOW
+namespace uShip.NHibnernate.UnitOfWork
 {
     public abstract class UnitOfWork<TResult>
     {

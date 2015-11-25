@@ -6,7 +6,7 @@ using NHibernate;
 using NHibernate.Exceptions;
 using NSubstitute;
 using NUnit.Framework;
-using UOW;
+using uShip.NHibnernate.UnitOfWork;
 
 namespace UnitOfWorkTests
 {

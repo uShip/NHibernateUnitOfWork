@@ -5,9 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using NHibernate;
 using NHibernate.Transform;
-//using uShip.Enums;
 
-namespace UOW // uShip.Framework.Extensions
+namespace uShip.NHibnernate.UnitOfWork
 {
     public static class SessionSqlStoredProcedureExtensions
     {

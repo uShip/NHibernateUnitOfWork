@@ -7,8 +7,8 @@
     <ProjectGuid>{1E35341D-61E0-4219-9369-621B6893B8EE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UOW</RootNamespace>
-    <AssemblyName>UOW</AssemblyName>
+    <RootNamespace>uShip.NHibnernate.UnitOfWork</RootNamespace>
+    <AssemblyName>UnitOfWork</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>54588eb5</NuGetPackageImportStamp>

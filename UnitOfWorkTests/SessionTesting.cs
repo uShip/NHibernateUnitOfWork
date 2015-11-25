@@ -3,7 +3,7 @@ using System.Data;
 using NHibernate;
 using NSubstitute;
 using NUnit.Framework;
-using UOW;
+using uShip.NHibnernate.UnitOfWork;
 
 namespace UnitOfWorkTests
 {
