@@ -12,9 +12,7 @@ aspnet_client/
 _UpgradeReport_Files/*
 .eprj
 *.bat
-packages/*
-packages/uShip.*/
-packages/concord.*/
+**/packages/*
 uShip.Web.Publish.xml
 settings.json
 id3Solutions.WebModules.Core.xml
