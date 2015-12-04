@@ -8,6 +8,8 @@ using NHibernate.Transform;
 
 namespace uShip.NHibnernate.UnitOfWork
 {
+    // demo
+
     public static class SessionSqlStoredProcedureExtensions
     {
         //public static SqlStoredProcedure SqlStoredProcedure(
