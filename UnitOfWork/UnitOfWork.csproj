@@ -51,9 +51,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SessionFactoryExtensions.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlStoredProcedure.cs" />
+    <Compile Include="UnitOfWorkEvents.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

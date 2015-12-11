@@ -30,6 +30,7 @@ namespace UnitOfWorkTests
         [TestCase("a$")]
         [TestCase("a#")]
         [TestCase("a4")]
+        [TestCase(@"DOMAIN\username.stored_proc_name")]
         public void EnsureSafeSqlIdentifier_Safe(string identifier)
         {
             Assert.DoesNotThrow(() =>

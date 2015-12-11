@@ -4,19 +4,60 @@ using NHibernate;
 
 namespace uShip.NHibnernate.UnitOfWork
 {
+    /// <summary>
+    /// <para>
+    ///     Prefer the
+    ///     <see cref="uShip.NHibnernate.UnitOfWork.SessionFactoryExtensions"/>
+    ///     extension methods to deriving from this class directly, unless you 
+    ///     have needs those methods cannot accomodate.
+    /// </para>
+    /// <para>
+    ///     Provides automatic database Session and Transaction management for 
+    ///     short-lived business transactions.  
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">
+    ///     returned from Execute()
+    /// </typeparam>
     public abstract class UnitOfWork<TResult>
     {
+        /// <summary>
+        /// Each time <see cref="Execute"/> is invoked, a new Session and
+        /// Transaction will be created using this SessionFactory.
+        /// </summary>
         private readonly ISessionFactory _sessionFactory;
 
+        /// <summary>
+        /// Each time <see cref="Execute"/> is invoked, a new Session and
+        /// Transaction will be created using the supplied SessionFactory.
+        /// </summary>
         protected UnitOfWork(ISessionFactory sessionFactory)
         {
             _sessionFactory = sessionFactory;
         }
 
+        /// <summary>
+        /// automatic session and transaction management around the business
+        /// transaction represented by <see cref="InnerExecute"/>.
+        /// </summary>
+        /// 
+        /// <param name="isolationLevel">
+        /// the isolation level of the database transaction; consult SQL Server
+        /// Database documentation for further information
+        /// </param>
+        /// 
+        /// <returns>
+        /// the return value of <see cref="InnerExecute"/>
+        /// </returns>
+        /// 
+        /// <seealso>
+        /// <a href="https://technet.microsoft.com/en-us/library/ms189122(v=sql.105).aspx">
+        /// SQL Server Isolation Levels in the Database Engine</a>
+        /// </seealso>
         public TResult Execute(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
             using (var session = _sessionFactory.OpenSession())
-            using (session.BeginTransaction(isolationLevel))
+            using (var transaction = session.BeginTransaction(isolationLevel))
             {
                 TResult result;
 
@@ -27,18 +68,21 @@ namespace uShip.NHibnernate.UnitOfWork
                 }
                 catch (Exception executeOrCommitExc)
                 {
+                    UnitOfWorkEvents.FireOnExecuteOrCommitException(_sessionFactory, executeOrCommitExc);
                     try
                     {
                         RollbackIfActive(session.Transaction);
                     }
-                    catch (Exception rollbackExc)
+                    catch (Exception rollbackException)
                     {
                         // KLUDGE: This sucks: We can't rethrow to preserve
                         // stack traces, and the thrown exception won't look
                         // much like either of the original exceptions.
-                        throw new AggregateException(
+                        var aggregateException = new AggregateException(
                             executeOrCommitExc,
-                            rollbackExc);
+                            rollbackException);
+                        UnitOfWorkEvents.FireOnRollbackException(_sessionFactory, rollbackException);
+                        throw aggregateException;
                     }
                     throw;
                 }
@@ -57,69 +101,20 @@ namespace uShip.NHibnernate.UnitOfWork
             if (t.IsActive) t.Commit();
         }
 
-        public abstract TResult InnerExecute(NHibernate.ISession session);
-    }
-
-    public static class SessionFactoryExtensions
-    {
-        internal class Uow<TResult> : UnitOfWork<TResult>
-        {
-            private readonly Func<NHibernate.ISession, TResult> _doWork;
-
-            public Uow(
-                ISessionFactory sessionFactory,
-                Func<NHibernate.ISession, TResult> doWork)
-                : base(sessionFactory)
-            {
-                _doWork = doWork;
-            }
-
-            public override TResult InnerExecute(NHibernate.ISession session)
-            {
-                return _doWork(session);
-            }
-        }
-
-        public static TResult UnitOfWork<TResult>(
-            this ISessionFactory sessionFactory,
-            IsolationLevel isolationLevel,
-            Func<NHibernate.ISession, TResult> func)
-        {
-            return new Uow<TResult>(sessionFactory, func).Execute(isolationLevel);
-        }
-
-        public static TResult UnitOfWork<TResult>(
-            this ISessionFactory sessionFactory,
-            Func<NHibernate.ISession, TResult> func)
-        {
-            return new Uow<TResult>(sessionFactory, func).Execute();
-        }
-
-        public static void UnitOfWork(
-            this ISessionFactory sessionFactory,
-            Action<NHibernate.ISession> doWork)
-        {
-            new Uow<bool>(
-                sessionFactory,
-                session =>
-                {
-                    doWork(session);
-                    return true;
-                }).Execute();
-        }
-
-        public static void UnitOfWork(
-            this ISessionFactory sessionFactory,
-            IsolationLevel isolationLevel,
-            Action<NHibernate.ISession> doWork)
-        {
-            new Uow<bool>(
-                sessionFactory,
-                session =>
-                {
-                    doWork(session);
-                    return true;
-                }).Execute(isolationLevel);
-        }
+        /// <summary>
+        /// The body of the business transaction represented by a concrete
+        /// subclass of UnitOfWork.
+        /// </summary>
+        /// 
+        /// <param name="session">
+        /// A newly created <see cref="ISession"/> instance, created from
+        /// the <see cref="ISessionFactory"/> supplied to the UnitOfWork
+        /// constructor.
+        /// </param>
+        /// 
+        /// <returns>
+        /// the result of the business transaction, if any
+        /// </returns>
+        public abstract TResult InnerExecute(ISession session);
     }
 }

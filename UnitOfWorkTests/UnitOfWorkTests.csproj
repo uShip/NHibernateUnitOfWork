@@ -67,6 +67,7 @@
     <Compile Include="DatabaseSchema.cs" />
     <Compile Include="DatabaseSessionFactory.cs" />
     <Compile Include="DbConnectionTests.cs" />
+    <Compile Include="UnitOfWorkEventsTests.cs" />
     <Compile Include="UnitOfWorkTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetUpFixture.cs" />

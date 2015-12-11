@@ -168,7 +168,7 @@ namespace uShip.NHibnernate.UnitOfWork
         /// </para> 
         /// </summary>
         private static readonly Regex SafeStoredProcParamName = new Regex(
-            @"\A  [_\@\#a-z]  [\@\$\#\w]*  \Z",
+            @"\A  [_\@\#a-z]  [\.\@\$\#\w\\]*  \Z",
             RegexOptions.IgnoreCase
             | RegexOptions.IgnorePatternWhitespace);
 
@@ -180,10 +180,11 @@ namespace uShip.NHibnernate.UnitOfWork
             if (string.IsNullOrWhiteSpace(identifier)
                 || !SafeStoredProcParamName.IsMatch(identifier))
             {
-                throw new ArgumentException(
-                    "The stored procedure parameter name '{0}' is unsafe;" +
+                throw new ArgumentException(string.Format(
+                    "The stored procedure parameter name '{0}' is unsafe; " +
                     "safe names contain only letters, digits, and the " +
-                    "underscore character.");
+                    "underscore character.",
+                    identifier));
             }
         }
     }
