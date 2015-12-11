@@ -60,7 +60,7 @@ namespace UnitOfWorkTests
             var sessionFactory = Substitute.For<ISessionFactory>();
             var exception = new Exception();
 
-            UnitOfWorkEvents.FireOnExecuteOrCommitException(sessionFactory, exception);
+            UnitOfWorkEvents.OnExecuteOrCommitException(sessionFactory, exception);
 
             Assert.AreEqual(1, handler.CallCount);
             Assert.AreSame(sessionFactory, handler.LastSessionFactory);
@@ -76,7 +76,7 @@ namespace UnitOfWorkTests
             var handlerB = new Handler();
             UnitOfWorkEvents.AddGlobalExecuteOrCommitExceptionHandler(handlerB.OnException);
 
-            UnitOfWorkEvents.FireOnExecuteOrCommitException(
+            UnitOfWorkEvents.OnExecuteOrCommitException(
                 Substitute.For<ISessionFactory>(),
                 new Exception());
 
@@ -93,7 +93,7 @@ namespace UnitOfWorkTests
             var exception = new Exception();
 
             Assert.DoesNotThrow(() =>
-                UnitOfWorkEvents.FireOnExecuteOrCommitException(sessionFactory, exception));
+                UnitOfWorkEvents.OnExecuteOrCommitException(sessionFactory, exception));
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace UnitOfWorkTests
             var sessionFactory = Substitute.For<ISessionFactory>();
             var exception = new Exception();
 
-            UnitOfWorkEvents.FireOnRollbackException(sessionFactory, exception);
+            UnitOfWorkEvents.OnRollbackException(sessionFactory, exception);
 
             Assert.AreEqual(1, handler.CallCount);
             Assert.AreSame(sessionFactory, handler.LastSessionFactory);
@@ -120,7 +120,7 @@ namespace UnitOfWorkTests
             var handlerB = new Handler();
             UnitOfWorkEvents.AddGlobalRollbackExceptionHandler(handlerB.OnException);
 
-            UnitOfWorkEvents.FireOnRollbackException(
+            UnitOfWorkEvents.OnRollbackException(
                 Substitute.For<ISessionFactory>(),
                 new Exception());
 
@@ -137,7 +137,7 @@ namespace UnitOfWorkTests
             var exception = new Exception();
             
             Assert.DoesNotThrow(() => 
-                UnitOfWorkEvents.FireOnRollbackException(sessionFactory, exception));
+                UnitOfWorkEvents.OnRollbackException(sessionFactory, exception));
         }
 
         [Test]

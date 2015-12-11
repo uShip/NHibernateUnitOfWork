@@ -56,6 +56,7 @@ namespace uShip.NHibnernate.UnitOfWork
         /// </seealso>
         public TResult Execute(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
+            // ReSharper disable once UnusedVariable
             using (var session = _sessionFactory.OpenSession())
             using (var transaction = session.BeginTransaction(isolationLevel))
             {
@@ -64,13 +65,17 @@ namespace uShip.NHibnernate.UnitOfWork
                 try
                 {
                     result = InnerExecute(session);
+                    // Notice that the current transaction may NOT be the one
+                    // we opened in the using block.
                     CommitIfActive(session.Transaction);
                 }
                 catch (Exception executeOrCommitExc)
                 {
-                    UnitOfWorkEvents.FireOnExecuteOrCommitException(_sessionFactory, executeOrCommitExc);
+                    UnitOfWorkEvents.OnExecuteOrCommitException(_sessionFactory, executeOrCommitExc);
                     try
                     {
+                        // Notice that the current transaction may NOT be the one
+                        // we opened in the using block.
                         RollbackIfActive(session.Transaction);
                     }
                     catch (Exception rollbackException)
@@ -81,7 +86,7 @@ namespace uShip.NHibnernate.UnitOfWork
                         var aggregateException = new AggregateException(
                             executeOrCommitExc,
                             rollbackException);
-                        UnitOfWorkEvents.FireOnRollbackException(_sessionFactory, rollbackException);
+                        UnitOfWorkEvents.OnRollbackException(_sessionFactory, rollbackException);
                         throw aggregateException;
                     }
                     throw;

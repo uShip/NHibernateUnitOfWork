@@ -32,8 +32,10 @@ namespace uShip.NHibnernate.UnitOfWork
             ISessionFactory sessionFactory, 
             Exception exc);
 
-        private static event OnException OnExecuteOrCommitException = delegate { };
-        private static event OnException OnRollbackException = delegate { };
+        // ReSharper disable InconsistentNaming - use non-standard naming to keep internal method names nice
+        private static event OnException _onExecuteOrCommitException = delegate { };
+        private static event OnException _onRollbackException = delegate { };
+        // ReSharper restore InconsistentNaming
 
         /// <summary>
         ///     Register a global callback that will be notified when exceptions occur
@@ -50,7 +52,7 @@ namespace uShip.NHibnernate.UnitOfWork
         {
             if (null == handler) throw new ArgumentNullException("handler");
                 
-            OnExecuteOrCommitException += handler;
+            _onExecuteOrCommitException += handler;
         }
 
         /// <summary>
@@ -70,7 +72,7 @@ namespace uShip.NHibnernate.UnitOfWork
         {
             if (null == handler) throw new ArgumentNullException("handler");
 
-            OnRollbackException += handler;
+            _onRollbackException += handler;
         }
 
         /// <summary>
@@ -87,13 +89,13 @@ namespace uShip.NHibnernate.UnitOfWork
         /// <param name="exc">
         /// the exception that occurred
         /// </param>
-        internal static void FireOnExecuteOrCommitException(
+        internal static void OnExecuteOrCommitException(
             ISessionFactory sessionFactory, 
             Exception exc)
         {
             try
             {
-                OnExecuteOrCommitException(sessionFactory, exc);
+                _onExecuteOrCommitException(sessionFactory, exc);
             }
             catch
             {
@@ -115,13 +117,13 @@ namespace uShip.NHibnernate.UnitOfWork
         /// <param name="exc">
         /// the exception that occurred
         /// </param>
-        internal static void FireOnRollbackException(
+        internal static void OnRollbackException(
             ISessionFactory sessionFactory, 
             Exception exc)
         {
             try
             {
-                OnRollbackException(sessionFactory, exc);
+                _onRollbackException(sessionFactory, exc);
             }
             catch
             {
@@ -135,8 +137,8 @@ namespace uShip.NHibnernate.UnitOfWork
         /// </summary>
         internal static void RemoveAllHandlers()
         {
-            OnExecuteOrCommitException = delegate { };
-            OnRollbackException = delegate { };
+            _onExecuteOrCommitException = delegate { };
+            _onRollbackException = delegate { };
         }
     }
 }
