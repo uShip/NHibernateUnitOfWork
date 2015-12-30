@@ -41,8 +41,7 @@ namespace UnitOfWorkTests
                 }
 
                 return Fluently.Configure()
-                    .Database(msSqlConfiguration
-                        )
+                    .Database(msSqlConfiguration)
                     .Mappings(m => m.FluentMappings
                         .AddFromAssemblyOf<AuctionMap>());
             }
