@@ -14,5 +14,8 @@
       Experimental release.  Not intended for production use (yet).
     </releaseNotes>
     <copyright>Copyright 2015 uShip, Inc.</copyright>
+    <dependencies>
+      <dependency id="FluentNHibernate" version="1.4.0"  />
+    </dependencies>
   </metadata>
 </package>
