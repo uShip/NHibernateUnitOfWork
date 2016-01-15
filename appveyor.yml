@@ -1,4 +1,9 @@
 version: 1.0.{build}-beta
+branches:
+  only: 
+  - master
+pull_requests:
+  do_not_increment_build_number: true
 clone_depth: 1
 assembly_info:
   patch: true
@@ -8,6 +13,10 @@ assembly_info:
   assembly_informational_version: '{version}'
 services: mssql2014
 cache: packages -> **\packages.config
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
 before_build:
 - cmd: nuget restore
 build:
@@ -21,4 +30,13 @@ before_test:
 deploy:
 - provider: NuGet
   api_key:
-    secure: FQ3g9pNLUHdiEs/6XUvR52I81RhAzaLgU8uPL0c/npjuzegjFDwibC6qJ9lkD8kb
+    secure: LAUvjakgzRSJgwdGkjrFEV/KRvUgWABPUuye+IcpCUwGRO+w/ZqxVV7okkGN1v1T
+  skip_symbols: true
+notifications:
+- provider: Slack
+  auth_token:
+    secure: QYIi0MlTdmQItOynU70xq8OjW9q18zfNbcaI8bIXPBNBehcmn5s+bIpQWIGoCZDIUhO+ubDRFXMDNNZUztnGEQ==
+  channel: appveyor
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true
