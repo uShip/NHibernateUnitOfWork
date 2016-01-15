@@ -4,9 +4,9 @@ NHibernate UnitOfWork
 Build and NuGet
 --------------------
 
-![NHibernateUnitOfWork continuous integration status](https://ci.appveyor.com/api/projects/status/github/EdVinyard/NHibernateUnitOfWork?branch=master&svg=true)
+[![NHibernateUnitOfWork continuous integration status](https://ci.appveyor.com/api/projects/status/v58yg2x8gpks235c/branch/master?svg=true)](https://ci.appveyor.com/project/uShip/nhibernateunitofwork/branch/master)
 
-[NuGet package](https://www.nuget.org/packages/UOW/)
+[NuGet package](https://www.nuget.org/packages/NHibernate.UnitOfWork/)
 
 What It Is
 ------------
