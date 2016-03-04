@@ -1,7 +1,7 @@
 ﻿using System;
 using NHibernate;
 
-namespace uShip.NHibnernate.UnitOfWork
+namespace uShip.NHibernate.UnitOfWork
 {
     /// <summary>
     ///     Register global callbacks that are notified when exceptions occur

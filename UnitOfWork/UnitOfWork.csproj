@@ -7,7 +7,7 @@
     <ProjectGuid>{1E35341D-61E0-4219-9369-621B6893B8EE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>uShip.NHibnernate.UnitOfWork</RootNamespace>
+    <RootNamespace>uShip.NHibernate.UnitOfWork</RootNamespace>
     <AssemblyName>UnitOfWork</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

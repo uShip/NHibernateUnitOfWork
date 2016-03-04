@@ -2,12 +2,12 @@
 using System.Data;
 using NHibernate;
 
-namespace uShip.NHibnernate.UnitOfWork
+namespace uShip.NHibernate.UnitOfWork
 {
     /// <summary>
     /// <para>
     ///     Prefer the
-    ///     <see cref="uShip.NHibnernate.UnitOfWork.SessionFactoryExtensions"/>
+    ///     <see cref="SessionFactoryExtensions"/>
     ///     extension methods to deriving from this class directly, unless you 
     ///     have needs those methods cannot accomodate.
     /// </para>

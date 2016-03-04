@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using NHibernate;
 using NHibernate.Transform;
 
-namespace uShip.NHibnernate.UnitOfWork
+namespace uShip.NHibernate.UnitOfWork
 {
     public static class SessionSqlStoredProcedureExtensions
     {
